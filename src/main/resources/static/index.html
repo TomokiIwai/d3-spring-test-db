@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>トップページ</title>
+</head>
+<body>
+
+<input type="button" value="データ登録" id="register">
+
+<div>
+    <textarea id="canvas" cols="100" rows="10" readonly></textarea>
+</div>
+
+<script>
+  var $register = document.getElementById('register');
+  var $canvas = document.getElementById('canvas');
+
+  /**
+   * データを取得します。
+   *
+   * @returns {Promise}
+   */
+  function doSelectAll() {
+    return new Promise(function (resolve, reject) {
+      var xhr = new XMLHttpRequest();
+
+      xhr.open('POST', '/selectAll');
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          resolve(xhr.responseText);
+        } else {
+          reject();
+        }
+      };
+      xhr.send();
+    });
+  }
+
+  /**
+   * データを登録します。
+   */
+  function doRegister() {
+    var xhr = new XMLHttpRequest();
+
+    xhr.open('POST', '/register');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function () {
+      if (xhr.status !== 200) {
+        alert('登録できませんでした。')
+      }
+    };
+    var name = 'name' + Math.floor(Math.random() * 1000);
+    var password = 'password';
+
+    xhr.send(encodeURI('username=' + name + '&password=' + password));
+  }
+
+  // 登録ボタンがクリックされた際に呼び出されます。
+  $register.addEventListener('click', doRegister);
+
+  // データを取得してテキストエリアに描画
+  setInterval(function () {
+    doSelectAll().then(function (data) {
+      $canvas.value = data;
+    });
+  }, 2000);
+</script>
+</body>
+</html>

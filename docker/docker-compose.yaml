@@ -1,0 +1,14 @@
+version: '2.1'
+
+services:
+  mysql-d3:
+      container_name: mysql-d3
+      build: mysql
+      environment:
+        MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      ports:
+          - "127.0.0.1:3306:3306"
+      volumes:
+          - "./mysql/scripts:/docker-entrypoint-initdb.d"
+          - "./mysql/conf.d/:/etc/mysql/conf.d/"
+          - "./mysql/my.cnf:/etc/mysql/my.cnf"
